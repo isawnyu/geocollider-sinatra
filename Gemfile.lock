@@ -1,0 +1,34 @@
+GIT
+  remote: https://github.com/ryanfb/geocollider.git
+  revision: 4b4730570eaf8ba1c6a3f6b44358bbe906220d96
+  specs:
+    geocollider (0.0.0)
+      pbf_parser
+      rgeo
+      rgeo-geojson
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    pbf_parser (0.2.0)
+    rack (1.6.4)
+    rack-protection (1.5.3)
+      rack
+    rgeo (0.5.3)
+    rgeo-geojson (0.4.3)
+      rgeo (~> 0.5)
+    sinatra (1.4.7)
+      rack (~> 1.5)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
+    tilt (2.0.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  geocollider!
+  sinatra
+
+BUNDLED WITH
+   1.13.2
