@@ -34,5 +34,22 @@ end
 
 post '/process' do
   $stderr.puts params.inspect
-  File.foreach(params['csvfile']).first(3).join('<br/>')
+  csv_options = {
+    :separator => params['separator'] == 'tab' ? "\t" : ',',
+    :quote_char => params['quote_char'].empty? ? "\u{FFFF}" : params['quote_char'],
+    :names => params['names'].split(','),
+    :lat => params['lat'],
+    :lon => params['lon'],
+    :id => params['id']
+  }
+  $stderr.puts csv_options.inspect
+  csv_parser = Geocollider::CSVParser.new(csv_options)
+  output_tempfile = Tempfile.new(['processed_','.csv'])
+  output_tempfile.close
+  output_csv = output_tempfile.path
+  CSV.open(output_csv, 'wb') do |csv|
+    csv_comparison = csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
+    csv_parser.parse([params['csvfile']], csv_comparison)
+  end
+  File.read(output_csv)
 end
