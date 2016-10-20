@@ -1,0 +1,34 @@
+%html
+  %body
+    %h1 File upload
+    %p Uploaded file preview:
+    %p= @csv_preview
+    %br
+    %form(method="post" enctype='multipart/form-data' action='process')
+      %input(type='hidden' name='csvfile' value=@uploaded_filename)
+      Field separator:
+      %br
+      %input(type='radio' name='separator' value='comma' checked)Comma (CSV)
+      %br
+      %input(type='radio' name='separator' value='tab')Tab (TSV)
+      %br
+      %br
+      %input(type='checkbox' name='headers' value='true')First row contains column headers
+      %br
+      Quote character:
+      %input(type='text' name='quote_char' maxlength='1')
+      %br
+      %br
+      If you have column headers, use column names. Otherwise, use column numbers starting from 0.
+      %br
+      Column containing latitude:
+      %input(type='text' name='lat_col')
+      Column containing longitude:
+      %input(type='text' name='lon_col')
+      Column containing identifier string:
+      %input(type='text' name='id_col')
+      Column containing names:
+      %input(type='text' name='names_col')
+      %br
+      %br
+      %input(type='submit' value='Process')

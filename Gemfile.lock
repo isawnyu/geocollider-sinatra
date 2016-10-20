@@ -1,8 +1,9 @@
 GIT
   remote: https://github.com/ryanfb/geocollider.git
-  revision: 4b4730570eaf8ba1c6a3f6b44358bbe906220d96
+  revision: 908090403218c864e4e434daa6d43427406d3560
   specs:
     geocollider (0.0.0)
+      highline
       pbf_parser
       rgeo
       rgeo-geojson
@@ -10,6 +11,9 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    haml (4.0.7)
+      tilt
+    highline (1.7.8)
     pbf_parser (0.2.0)
     rack (1.6.4)
     rack-protection (1.5.3)
@@ -28,6 +32,7 @@ PLATFORMS
 
 DEPENDENCIES
   geocollider!
+  haml
   sinatra
 
 BUNDLED WITH
