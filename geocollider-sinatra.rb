@@ -51,5 +51,6 @@ post '/process' do
     csv_comparison = csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
     csv_parser.parse([params['csvfile']], csv_comparison)
   end
+  response.headers['Content-Disposition'] = "attachment; filename=geocollider_results-#{Time.now.strftime("%Y-%m-%d-%H-%M-%S")}.csv"
   File.read(output_csv)
 end
