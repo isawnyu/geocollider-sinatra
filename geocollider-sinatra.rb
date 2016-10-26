@@ -1,12 +1,37 @@
 #!/usr/bin/env ruby
 
-require 'sinatra'
+require 'sinatra/base'
 require 'tempfile'
 require 'haml'
 require 'geocollider'
 
+# JS/CSS asset management
+require 'sprockets'
+require 'uglifier'
+require 'sass'
+require 'coffee-script'
+require 'execjs'
+
+class GeocolliderSinatra < Sinatra::Base
 pleiades = Geocollider::PleiadesParser.new()
 pleiades_names, pleiades_places = pleiades.parse(pleiades.download())
+
+# initialize new sprockets environment
+set :environment, Sprockets::Environment.new
+
+# append assets paths
+environment.append_path "assets/stylesheets"
+environment.append_path "assets/javascripts"
+
+# compress assets
+environment.js_compressor  = :uglify
+environment.css_compressor = :scss
+
+# get assets
+get "/assets/*" do
+  env["PATH_INFO"].sub!("/assets", "")
+  settings.environment.call(env)
+end
 
 get '/' do
   'Hello world'
@@ -53,4 +78,5 @@ post '/process' do
   end
   response.headers['Content-Disposition'] = "attachment; filename=geocollider_results-#{Time.now.strftime("%Y-%m-%d-%H-%M-%S")}.csv"
   File.read(output_csv)
+end
 end
