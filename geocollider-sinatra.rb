@@ -53,7 +53,7 @@ class GeocolliderSinatra < Sinatra::Base
       f.write(params['csvfile'][:tempfile].read)
     end
 
-    @csv_preview = File.foreach(@uploaded_filename).first(3).join('<br/>')
+    @csv_preview = File.foreach(@uploaded_filename).first(3).join("\n")
     haml :post_upload
   end
 

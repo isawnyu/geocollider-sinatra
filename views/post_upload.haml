@@ -3,7 +3,8 @@
   %body
     %h1 File upload
     %p Uploaded file preview:
-    %p= @csv_preview
+    %pre
+      %code= @csv_preview
     %br
     %form(method="post" enctype='multipart/form-data' action='process')
       %input(type='hidden' name='csvfile' value=@uploaded_filename)
