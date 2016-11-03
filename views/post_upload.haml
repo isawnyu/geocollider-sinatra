@@ -4,15 +4,15 @@
     %h1 File upload
     %p Uploaded file preview:
     %pre
-      %code= @csv_preview
+      %code(id='csv_preview')= @csv_preview
     %br
     %form(method="post" enctype='multipart/form-data' action='process')
       %input(type='hidden' name='csvfile' value=@uploaded_filename)
       Field separator:
       %br
-      %input(type='radio' name='separator' value='comma' checked)Comma (CSV)
+      %input(type='radio' id='radio_csv' name='separator' value='comma' checked)Comma (CSV)
       %br
-      %input(type='radio' name='separator' value='tab')Tab (TSV)
+      %input(type='radio' id='radio_tsv' name='separator' value='tab')Tab (TSV)
       %br
       %br
       %input(type='checkbox' name='headers' value='true')First row contains column headers
