@@ -2,9 +2,11 @@
   %script(src='/assets/app.js')
   %body
     %h1 File upload
-    %p Uploaded file preview:
+    %p Uploaded file preview (raw data):
     %pre
       %code(id='csv_preview')= @csv_preview
+    %p Uploaded file preview (pretty-printed):
+    %div#pretty_print
     %br
     %form(method="post" enctype='multipart/form-data' action='process')
       %input(type='hidden' name='csvfile' value=@uploaded_filename)
