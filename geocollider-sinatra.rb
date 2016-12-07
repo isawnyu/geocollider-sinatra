@@ -34,7 +34,7 @@ class GeocolliderSinatra < Sinatra::Base
   end
 
   get '/' do
-    'Hello world'
+    haml :upload
   end
 
   get '/upload' do
