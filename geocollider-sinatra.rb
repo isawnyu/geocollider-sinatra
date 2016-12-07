@@ -69,14 +69,16 @@ class GeocolliderSinatra < Sinatra::Base
     }
     $stderr.puts csv_options.inspect
     csv_parser = Geocollider::CSVParser.new(csv_options)
-    output_tempfile = Tempfile.new(['processed_','.csv'])
-    output_tempfile.close
-    output_csv = output_tempfile.path
-    CSV.open(output_csv, 'wb') do |csv|
-      csv_comparison = csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
-      csv_parser.parse([params['csvfile']], csv_comparison)
+    Tempfile.open(['processed_','.csv']) do |output_tempfile|
+      CSV.open(output_tempfile, 'wb') do |csv|
+        csv_comparison = csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
+        if(params['algorithm'] == 'name')
+          csv_comparison = csv_parser.string_comparison_lambda(pleiades_names, pleiades_places, csv)
+        end
+        csv_parser.parse([params['csvfile']], csv_comparison)
+      end
+      response.headers['Content-Disposition'] = "attachment; filename=geocollider_results-#{Time.now.strftime("%Y-%m-%d-%H-%M-%S")}.csv"
+      File.read(output_tempfile.path)
     end
-    response.headers['Content-Disposition'] = "attachment; filename=geocollider_results-#{Time.now.strftime("%Y-%m-%d-%H-%M-%S")}.csv"
-    File.read(output_csv)
   end
 end
