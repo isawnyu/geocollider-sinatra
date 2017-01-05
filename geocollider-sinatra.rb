@@ -14,7 +14,7 @@ require 'execjs'
 
 class GeocolliderSinatra < Sinatra::Base
   pleiades = Geocollider::PleiadesParser.new()
-  pleiades_names, pleiades_places = pleiades.parse(pleiades.download())
+  pleiades_names, pleiades_places = pleiades.parse(Geocollider::PleiadesParser::FILENAMES)
 
   # initialize new sprockets environment
   set :environment, Sprockets::Environment.new
