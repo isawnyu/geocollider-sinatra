@@ -20,6 +20,8 @@ GEM
       tilt
     highline (1.7.8)
     rack (1.6.5)
+    rack-attack (5.0.1)
+      rack
     rack-protection (1.5.3)
       rack
     rgeo (0.5.3)
@@ -45,6 +47,8 @@ DEPENDENCIES
   execjs
   geocollider!
   haml
+  rack-attack
+  rack-protection
   sass
   sinatra
   sprockets
