@@ -1,48 +1,46 @@
-%html
-  %script(src='/assets/app.js')
-  %body
-    %h1 File upload
-    %p Uploaded file preview (raw data):
-    %pre
-      %code(id='csv_preview')= @csv_preview
-    %p Uploaded file preview (pretty-printed):
-    %div#pretty_print
-    %br
-    %form(method="post" enctype='multipart/form-data' action='process')
-      %input(type='hidden' name='csvfile' value=@uploaded_filename)
-      Field separator:
-      %br
-      %input(type='radio' id='radio_csv' name='separator' value='comma' checked)Comma (CSV)
-      %br
-      %input(type='radio' id='radio_tsv' name='separator' value='tab')Tab (TSV)
-      %br
-      %br
-      %input(type='checkbox' name='headers' value='true')First row contains column headers
-      %br
-      Quote character:
-      %input(type='text' name='quote_char' maxlength='1')
-      %br
-      %br
-      If you have column headers, use column names. Otherwise, use column numbers starting from 0.
-      %br
-      Column containing latitude:
-      %input(type='text' name='lat')
-      %br
-      Column containing longitude:
-      %input(type='text' name='lon')
-      %br
-      Column containing identifier string:
-      %input(type='text' name='id')
-      %br
-      Column(s) containing names (comma-separated):
-      %input(type='text' name='names')
-      %br
-      %br
-      Matching algorithm:
-      %br
-      %input(type='radio' name='algorithm' value='place' checked)Name + Place matching
-      %br
-      %input(type='radio' name='algorithm' value='name')Name-only matching
-      %br
-      %br
-      %input(type='submit' value='Process')
+%script(src='/assets/app.js')
+%h1 File upload
+%p Uploaded file preview (raw data):
+%pre
+  %code(id='csv_preview')= @csv_preview
+%p Uploaded file preview (pretty-printed):
+%div#pretty_print
+%br
+%form(method="post" enctype='multipart/form-data' action='process')
+  %input(type='hidden' name='csvfile' value=@uploaded_filename)
+  Field separator:
+  %br
+  %input(type='radio' id='radio_csv' name='separator' value='comma' checked)Comma (CSV)
+  %br
+  %input(type='radio' id='radio_tsv' name='separator' value='tab')Tab (TSV)
+  %br
+  %br
+  %input(type='checkbox' name='headers' value='true')First row contains column headers
+  %br
+  Quote character:
+  %input(type='text' name='quote_char' maxlength='1')
+  %br
+  %br
+  If you have column headers, use column names. Otherwise, use column numbers starting from 0.
+  %br
+  Column containing latitude:
+  %input(type='text' name='lat')
+  %br
+  Column containing longitude:
+  %input(type='text' name='lon')
+  %br
+  Column containing identifier string:
+  %input(type='text' name='id')
+  %br
+  Column(s) containing names (comma-separated):
+  %input(type='text' name='names')
+  %br
+  %br
+  Matching algorithm:
+  %br
+  %input(type='radio' name='algorithm' value='place' checked)Name + Place matching
+  %br
+  %input(type='radio' name='algorithm' value='name')Name-only matching
+  %br
+  %br
+  %input(type='submit' value='Process')
