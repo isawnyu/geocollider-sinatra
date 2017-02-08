@@ -1,13 +1,15 @@
 pretty_csv = (parsed_data) ->
   container = d3.select('#pretty_print')
     .append('table')
-    .selectAll('tr')
-      .data(parsed_data).enter()
-      .append('tr')
-    .selectAll('td')
-      .data((d) -> d).enter()
-      .append('td')
-      .text((d) -> d)
+      .attr('class','table table-bordered')
+    .append('tbody')
+      .selectAll('tr')
+        .data(parsed_data).enter()
+        .append('tr')
+      .selectAll('td')
+        .data((d) -> d).enter()
+        .append('td')
+        .text((d) -> d)
 
 detect_delimiter = (data) ->
   results = Papa.parse(data)

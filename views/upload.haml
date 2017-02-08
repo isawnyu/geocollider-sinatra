@@ -1,5 +1,7 @@
-%h1 File upload
-%form(method="post" enctype='multipart/form-data' action='/upload')
-  %input(type='file' name='csvfile' accept='.csv,.tsv,.txt')
-  %br
-  %input(type='submit' value='Upload')
+.jumbotron
+  %h1 File Upload
+  %p
+    %form(method="post" enctype='multipart/form-data' action='/upload')
+      %input(type='file' name='csvfile' accept='.csv,.tsv,.txt')
+      %br
+      %input.btn.btn-primary(type='submit' value='Upload')
