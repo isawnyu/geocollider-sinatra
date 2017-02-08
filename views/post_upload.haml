@@ -9,38 +9,45 @@
 %form(method="post" enctype='multipart/form-data' action='process')
   %input(type='hidden' name='csvfile' value=@uploaded_filename)
   Field separator:
+  .radio
+    %label
+      %input(type='radio' id='radio_csv' name='separator' value='comma' checked)Comma (CSV)
+  .radio
+    %label
+      %input(type='radio' id='radio_tsv' name='separator' value='tab')Tab (TSV)
+  .checkbox
+    %label
+      %input(type='checkbox' name='headers' value='true')First row contains column headers
+  .form-group.form-inline
+    %label(for='quote_char') Quote character:
+    %input(type='text' name='quote_char' maxlength='1')
   %br
-  %input(type='radio' id='radio_csv' name='separator' value='comma' checked)Comma (CSV)
-  %br
-  %input(type='radio' id='radio_tsv' name='separator' value='tab')Tab (TSV)
-  %br
-  %br
-  %input(type='checkbox' name='headers' value='true')First row contains column headers
-  %br
-  Quote character:
-  %input(type='text' name='quote_char' maxlength='1')
-  %br
-  %br
-  If you have column headers, use column names. Otherwise, use column numbers starting from 0.
-  %br
-  Column containing latitude:
-  %input(type='text' name='lat')
-  %br
-  Column containing longitude:
-  %input(type='text' name='lon')
-  %br
-  Column containing identifier string:
-  %input(type='text' name='id')
-  %br
-  Column(s) containing names (comma-separated):
-  %input(type='text' name='names')
-  %br
-  %br
+  .form-horizontal
+    .col-sm-4
+    .col-sm-8
+      %span If you have column headers, use column names. Otherwise, use column numbers starting from 0.
+    .form-group
+      %label.control-label.col-sm-4(for='lat') Column containing latitude:
+      .col-sm-8
+        %input(type='text' name='lat' class='form-control')
+    .form-group
+      %label.control-label.col-sm-4(for='lon') Column containing longitude:
+      .col-sm-8
+        %input(type='text' name='lon' class='form-control')
+    .form-group
+      %label.control-label.col-sm-4(for='id') Column containing identifier string:
+      .col-sm-8
+        %input(type='text' name='id' class='form-control')
+    .form-group
+      %label.control-label.col-sm-4(for='names') Column(s) containing names (comma-separated):
+      .col-sm-8
+        %input(type='text' name='names' class='form-control')
   Matching algorithm:
+  .radio
+    %label
+      %input(type='radio' name='algorithm' value='place' checked)Name + Place matching
+  .radio
+    %label
+      %input(type='radio' name='algorithm' value='name')Name-only matching
   %br
-  %input(type='radio' name='algorithm' value='place' checked)Name + Place matching
-  %br
-  %input(type='radio' name='algorithm' value='name')Name-only matching
-  %br
-  %br
-  %input(type='submit' value='Process')
+  %input.btn.btn-primary(type='submit' value='Process')
