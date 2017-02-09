@@ -71,7 +71,7 @@ class GeocolliderSinatra < Sinatra::Base
       :names => params['names'].split(','),
       :lat => params['lat'],
       :lon => params['lon'],
-      :id => params['id']
+      :id => params['id'],
       :headers => (params['headers'] == 'true')
     }
     $stderr.puts csv_options.inspect
