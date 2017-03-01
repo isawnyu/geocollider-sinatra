@@ -10,6 +10,16 @@ pretty_csv = (parsed_data) ->
         .data((d) -> d).enter()
         .append('td')
         .text((d) -> d)
+  add_column_numbers()
+
+add_column_numbers = ->
+  num_columns = $('#pretty_print tr:first-child td').length
+  console.log('columns: ' + num_columns)
+  tr = $('<tr>')
+  for column in [0...num_columns]
+    tr.append($('<th>').text(column))
+  thead = $('<thead>').append(tr)
+  $('#pretty_print table').prepend(thead)
 
 detect_delimiter = (data) ->
   results = Papa.parse(data)
