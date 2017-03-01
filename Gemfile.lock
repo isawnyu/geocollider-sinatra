@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ryanfb/geocollider.git
-  revision: 972298df7c604408d374fb99b059ced8ae85c64c
+  revision: 8569cebbfd3dddc104f85c834532fbabaac3c7c1
   specs:
     geocollider (0.0.0)
       highline
@@ -19,19 +19,19 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.0.4)
+    concurrent-ruby (1.0.5)
     execjs (2.7.0)
     haml (4.0.7)
       tilt
     highline (1.7.8)
-    i18n (0.8.0)
+    i18n (0.8.1)
     minitest (5.10.1)
     rack (1.6.5)
     rack-attack (5.0.1)
       rack
     rack-protection (1.5.3)
       rack
-    rgeo (0.5.3)
+    rgeo (0.6.0)
     rgeo-geojson (0.4.3)
       rgeo (~> 0.5)
     sass (3.4.23)
@@ -42,11 +42,11 @@ GEM
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
-    thread_safe (0.3.5)
+    thread_safe (0.3.6)
     tilt (2.0.6)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (3.0.4)
+    uglifier (3.1.2)
       execjs (>= 0.3.0, < 3)
 
 PLATFORMS
