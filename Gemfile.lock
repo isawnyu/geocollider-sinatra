@@ -1,16 +1,17 @@
 GIT
   remote: https://github.com/ryanfb/geocollider.git
-  revision: 8569cebbfd3dddc104f85c834532fbabaac3c7c1
+  revision: da22c23f0d3f55f959507f99b3444de841164fb3
   specs:
     geocollider (0.0.0)
       highline
+      i18n
       rgeo
       rgeo-geojson
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (5.0.1)
+    activesupport (5.0.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
       minitest (~> 5.1)
@@ -46,7 +47,7 @@ GEM
     tilt (2.0.6)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (3.1.2)
+    uglifier (3.1.4)
       execjs (>= 0.3.0, < 3)
 
 PLATFORMS
