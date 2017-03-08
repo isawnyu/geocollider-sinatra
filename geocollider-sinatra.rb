@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
+
 require 'sinatra/base'
 require 'tempfile'
 require 'haml'
@@ -14,6 +17,7 @@ require 'execjs'
 
 class GeocolliderSinatra < Sinatra::Base
   pleiades = Geocollider::PleiadesParser.new()
+  tempfiles = []
 
   # initialize new sprockets environment
   set :environment, Sprockets::Environment.new
@@ -52,9 +56,10 @@ class GeocolliderSinatra < Sinatra::Base
     $stderr.puts upload_basename
     tempfile_file = Tempfile.new([upload_basename + '_','.csv'])
     tempfile_file.close
+    tempfiles << tempfile_file # prevent GC/deletion until we close
     @uploaded_filename = tempfile_file.path
     $stderr.puts @uploaded_filename
-    File.open(@uploaded_filename, "w") do |f|
+    File.open(@uploaded_filename, "wb") do |f|
       f.write(params['csvfile'][:tempfile].read)
     end
 
