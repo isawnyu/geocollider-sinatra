@@ -14,7 +14,6 @@ require 'execjs'
 
 class GeocolliderSinatra < Sinatra::Base
   pleiades = Geocollider::PleiadesParser.new()
-  pleiades_names, pleiades_places = pleiades.parse(Geocollider::PleiadesParser::FILENAMES)
 
   # initialize new sprockets environment
   set :environment, Sprockets::Environment.new
@@ -76,6 +75,8 @@ class GeocolliderSinatra < Sinatra::Base
     }
     $stderr.puts csv_options.inspect
     csv_parser = Geocollider::CSVParser.new(csv_options)
+
+    pleiades_names, pleiades_places = pleiades.parse(Geocollider::PleiadesParser::FILENAMES)
     Tempfile.open(['processed_','.csv']) do |output_tempfile|
       CSV.open(output_tempfile, 'wb') do |csv|
         csv_comparison = csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
