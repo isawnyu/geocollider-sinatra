@@ -49,5 +49,19 @@
   .radio
     %label
       %input(type='radio' name='algorithm' value='name')Name-only matching
+  String normalization:
+  .checkbox
+    %label.checkbox-inline
+      %input(type='checkbox' name="normalize[]" value='whitespace' checked)Whitespace
+    %label.checkbox-inline
+      %input(type='checkbox' name="normalize[]" value='case' checked)Case
+    %label.checkbox-inline
+      %input(type='checkbox' name="normalize[]" value='accents' checked)Strip Accents
+    %label.checkbox-inline
+      %input(type='checkbox' name="normalize[]" value='punctuation' checked)Strip Punctuation
+    %label.checkbox-inline
+      %input(type='checkbox' name="normalize[]" value='nfc' checked)Convert to Unicode Normalized Form C
+    %label.checkbox-inline
+      %input(type='checkbox' name="normalize[]" value='latin')Transliterate to Latin Script
   %br
   %input.btn.btn-primary(type='submit' value='Process')

@@ -69,6 +69,16 @@ class GeocolliderSinatra < Sinatra::Base
 
   post '/process' do
     $stderr.puts params.inspect
+
+    string_normalizer_lambda = lambda do |input_string|
+      string_normalizer = Geocollider::StringNormalizer.new(input_string)
+      %w{case accents nfc punctuation latin whitespace}.each do |normalizer|
+        if params['normalize'].include?(normalizer)
+          string_normalizer.send(normalizer)
+        end
+      end
+    end
+
     csv_options = {
       :separator => params['separator'] == 'tab' ? "\t" : ',',
       :quote_char => params['quote_char'].empty? ? "\u{FFFF}" : params['quote_char'],
@@ -76,12 +86,13 @@ class GeocolliderSinatra < Sinatra::Base
       :lat => params['lat'],
       :lon => params['lon'],
       :id => params['id'],
-      :headers => (params['headers'] == 'true')
+      :headers => (params['headers'] == 'true'),
+      :string_normalizer => string_normalizer_lambda
     }
     $stderr.puts csv_options.inspect
     csv_parser = Geocollider::CSVParser.new(csv_options)
 
-    pleiades_names, pleiades_places = pleiades.parse(Geocollider::PleiadesParser::FILENAMES)
+    pleiades_names, pleiades_places = pleiades.parse(Geocollider::PleiadesParser::FILENAMES, string_normalizer_lambda)
     Tempfile.open(['processed_','.csv']) do |output_tempfile|
       CSV.open(output_tempfile, 'wb') do |csv|
         csv_comparison = csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
