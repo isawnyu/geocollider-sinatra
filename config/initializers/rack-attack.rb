@@ -13,6 +13,8 @@ class Rack::Attack
       req.path.include?('wp-admin') ||
       req.path.include?('wp-login') ||
       req.path.include?('cgi-bin') ||
+      req.path.include?('.cgi') ||
+      req.path.include?('.php') ||
       req.path.include?('scripts')
     end
   end
@@ -41,7 +43,7 @@ class Rack::Attack
   # Throttle all requests by IP (60rpm)
   #
   # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.ip}"
-  throttle('req/ip', :limit => 300, :period => 5.minutes) do |req|
+  throttle('req/ip', :limit => 30, :period => 1.minutes) do |req|
     req.ip # unless req.path.start_with?('/assets')
   end
 
