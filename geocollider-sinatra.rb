@@ -16,8 +16,28 @@ require 'coffee-script'
 require 'execjs'
 
 class GeocolliderSinatra < Sinatra::Base
-  pleiades = Geocollider::PleiadesParser.new()
-  tempfiles = []
+  NORMALIZATION_DEFAULTS = %w{whitespace case accents punctuation nfc}
+
+  def initialize
+    super()
+    @pleiades = Geocollider::PleiadesParser.new()
+    @pleiades_parses = {}
+    @tempfiles = []
+    parse_pleiades(NORMALIZATION_DEFAULTS)
+  end
+
+  helpers do
+    def parse_pleiades(normalizations)
+      normalizations.sort!
+      unless @pleiades_parses.has_key?(normalizations)
+        $stderr.puts "No existing parse for normalizations: #{normalizations.join(' ')}\nParsing..."
+        string_normalizer_lambda = Geocollider::StringNormalizer.normalizer_lambda(normalizations)
+        @pleiades_parses[normalizations] = @pleiades.parse(Geocollider::PleiadesParser::FILENAMES, string_normalizer_lambda)
+        $stderr.puts "Parsing done for normalizations: #{normalizations.join(' ')}"
+      end
+      return @pleiades_parses[normalizations]
+    end
+  end
 
   # initialize new sprockets environment
   set :environment, Sprockets::Environment.new
@@ -56,7 +76,7 @@ class GeocolliderSinatra < Sinatra::Base
     $stderr.puts upload_basename
     tempfile_file = Tempfile.new([upload_basename + '_','.csv'])
     tempfile_file.close
-    tempfiles << tempfile_file # prevent GC/deletion until we close
+    @tempfiles << tempfile_file # prevent GC/deletion until we close
     @uploaded_filename = tempfile_file.path
     $stderr.puts @uploaded_filename
     File.open(@uploaded_filename, "wb") do |f|
@@ -70,15 +90,6 @@ class GeocolliderSinatra < Sinatra::Base
   post '/process' do
     $stderr.puts params.inspect
 
-    string_normalizer_lambda = lambda do |input_string|
-      string_normalizer = Geocollider::StringNormalizer.new(input_string)
-      %w{case accents nfc punctuation latin whitespace}.each do |normalizer|
-        if params['normalize'].include?(normalizer)
-          string_normalizer.send(normalizer)
-        end
-      end
-    end
-
     csv_options = {
       :separator => params['separator'] == 'tab' ? "\t" : ',',
       :quote_char => params['quote_char'].empty? ? "\u{FFFF}" : params['quote_char'],
@@ -87,12 +98,12 @@ class GeocolliderSinatra < Sinatra::Base
       :lon => params['lon'],
       :id => params['id'],
       :headers => (params['headers'] == 'true'),
-      :string_normalizer => string_normalizer_lambda
+      :string_normalizer => Geocollider::StringNormalizer.normalizer_lambda(params['normalize'])
     }
     $stderr.puts csv_options.inspect
     csv_parser = Geocollider::CSVParser.new(csv_options)
 
-    pleiades_names, pleiades_places = pleiades.parse(Geocollider::PleiadesParser::FILENAMES, string_normalizer_lambda)
+    pleiades_names, pleiades_places = parse_pleiades(params['normalize'])
     Tempfile.open(['processed_','.csv']) do |output_tempfile|
       CSV.open(output_tempfile, 'wb') do |csv|
         csv_comparison = csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)

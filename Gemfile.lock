@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ryanfb/geocollider.git
-  revision: ece744ad37fe7d797f4f51431c4b63740ddbb8ec
+  revision: 2e82cdf059547a95eea98956ba267f9701c22bf0
   specs:
     geocollider (0.0.0)
       highline
@@ -47,7 +47,7 @@ GEM
     tilt (2.0.6)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (3.1.5)
+    uglifier (3.1.7)
       execjs (>= 0.3.0, < 3)
 
 PLATFORMS
