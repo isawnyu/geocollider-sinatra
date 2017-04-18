@@ -16,13 +16,19 @@ require 'coffee-script'
 require 'execjs'
 
 # Airbrake
-if File.exist?('airbrake.yml')
+airbrake_config = {}
+if File.exist?('airbrake.yml') || (ENV['AIRBRAKE_PROJECT_ID'] && ENV['AIRBRAKE_PROJECT_KEY'])
   $stderr.puts 'Configuring Airbrake...'
 
   require 'airbrake'
   require 'yaml'
 
-  airbrake_config = YAML.load_file('airbrake.yml')
+  if File.exist?('airbrake.yml')
+    airbrake_config = YAML.load_file('airbrake.yml')
+  else
+    airbrake_config[:project_id] = ENV['AIRBRAKE_PROJECT_ID']
+    airbrake_config[:project_key] = ENV['AIRBRAKE_PROJECT_KEY']
+  end
 
   Airbrake.configure do |c|
     c.project_id = airbrake_config[:project_id]
@@ -34,7 +40,7 @@ if File.exist?('airbrake.yml')
 end
 
 class GeocolliderSinatra < Sinatra::Base
-  if File.exist?('airbrake.yml')
+  if airbrake_config != {}
     $stderr.puts 'Using Airbrake middleware...'
     use Airbrake::Rack::Middleware
   end
