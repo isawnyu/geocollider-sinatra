@@ -106,7 +106,7 @@ class GeocolliderSinatra < Sinatra::Base
       f.write(params['csvfile'][:tempfile].read)
     end
 
-    @csv_preview = File.foreach(@uploaded_filename).first(3).join("\n").squeeze("\n")
+    @csv_preview = File.open(@uploaded_filename,"r:bom|utf-8").read.force_encoding('UTF-8').encode('UTF-8', :invalid => :replace, :universal_newline => true).lines().first(3).join("\n").squeeze("\n")
     haml :post_upload
   end
 
