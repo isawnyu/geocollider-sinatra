@@ -32,7 +32,19 @@ detect_delimiter = (data) ->
       $('#radio_tsv').prop('checked',true)
       pretty_csv(d3.tsvParseRows(data))
 
+detect_column_header = ->
+  non_digit = /\D/
+  has_header = false
+  $('#column_specifiers input').each ->
+    if $(@).val().match non_digit
+      has_header = true
+  if ($('#column_headers').prop('checked') == false) && has_header
+    $('#column_headers').prop('checked',true)
+  else if ($('#column_headers').prop('checked') == true) && not has_header
+    $('#column_headers').prop('checked',false)
+
 $(document).ready ->
   console.log('ready')
   console.log($('#csv_preview').text())
+  $('#column_specifiers input').change(detect_column_header)
   detect_delimiter($('#csv_preview').text())

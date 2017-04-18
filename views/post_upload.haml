@@ -17,12 +17,12 @@
       %input(type='radio' id='radio_tsv' name='separator' value='tab')Tab (TSV)
   .checkbox
     %label
-      %input(type='checkbox' name='headers' value='true')First row contains column headers
+      %input(type='checkbox' name='headers' value='true' id='column_headers')First row contains column headers
   .form-group.form-inline
     %label(for='quote_char') Quote character:
     %input(type='text' name='quote_char' maxlength='1')
   %br
-  .form-horizontal
+  .form-horizontal#column_specifiers
     .col-sm-4
     .col-sm-8
       %span If you have column headers, use column names. Otherwise, use column numbers starting from 0.
