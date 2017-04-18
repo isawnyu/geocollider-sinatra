@@ -5,6 +5,7 @@ gem 'haml'
 gem 'geocollider', :git => 'https://github.com/ryanfb/geocollider.git'
 gem 'rack-attack'
 gem 'activesupport', '>= 3.0.0'
+gem 'airbrake'
 
 # JS/CSS assset management
 gem 'sprockets'

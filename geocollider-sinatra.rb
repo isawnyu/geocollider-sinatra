@@ -15,7 +15,30 @@ require 'sass'
 require 'coffee-script'
 require 'execjs'
 
+# Airbrake
+if File.exist?('airbrake.yml')
+  $stderr.puts 'Configuring Airbrake...'
+
+  require 'airbrake'
+  require 'yaml'
+
+  airbrake_config = YAML.load_file('airbrake.yml')
+
+  Airbrake.configure do |c|
+    c.project_id = airbrake_config[:project_id]
+    c.project_key = airbrake_config[:project_key]
+
+    # Display debug output.
+    c.logger.level = Logger::DEBUG
+  end
+end
+
 class GeocolliderSinatra < Sinatra::Base
+  if File.exist?('airbrake.yml')
+    $stderr.puts 'Using Airbrake middleware...'
+    use Airbrake::Rack::Middleware
+  end
+
   NORMALIZATION_DEFAULTS = %w{whitespace case accents punctuation nfc}
 
   def initialize
