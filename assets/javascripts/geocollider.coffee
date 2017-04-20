@@ -47,4 +47,6 @@ $(document).ready ->
   console.log('ready')
   console.log($('#csv_preview').text())
   $('#column_specifiers input').change(detect_column_header)
+  $('#column_headers').click ->
+    $('#column_specifiers input').unbind('change')
   detect_delimiter($('#csv_preview').text())
