@@ -45,10 +45,13 @@
   Matching algorithm:
   .radio
     %label
-      %input(type='radio' name='algorithm' value='place' checked)Name + Place matching
+      %input(type='radio' name='algorithm' value='place_name' checked)Name + Place matching
   .radio
     %label
       %input(type='radio' name='algorithm' value='name')Name-only matching
+  .radio
+    %label
+      %input(type='radio' name='algorithm' value='place')Place-only matching
   String normalization:
   .checkbox
     %label.checkbox-inline

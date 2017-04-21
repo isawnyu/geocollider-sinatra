@@ -135,10 +135,15 @@ class GeocolliderSinatra < Sinatra::Base
     pleiades_names, pleiades_places = parse_pleiades(params['normalize'])
     Tempfile.open(['processed_','.csv']) do |output_tempfile|
       CSV.open(output_tempfile, 'wb') do |csv|
-        csv_comparison = csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
-        if(params['algorithm'] == 'name')
-          csv_comparison = csv_parser.string_comparison_lambda(pleiades_names, pleiades_places, csv)
-        end
+        csv_comparison = 
+          case params['algorithm']
+          when 'place_name'
+            csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
+          when 'name'
+            csv_parser.string_comparison_lambda(pleiades_names, pleiades_places, csv)
+          when 'place'
+            csv_parser.point_comparison_lambda(pleiades_names, pleiades_places, csv)
+          end
         csv_parser.parse([params['csvfile']], csv_comparison)
       end
       response.headers['Content-Disposition'] = "attachment; filename=geocollider_results-#{Time.now.strftime("%Y-%m-%d-%H-%M-%S")}.csv"
