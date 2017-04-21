@@ -45,8 +45,12 @@ detect_column_header = ->
 
 $(document).ready ->
   console.log('ready')
-  console.log($('#csv_preview').text())
-  $('#column_specifiers input').change(detect_column_header)
-  $('#column_headers').click ->
-    $('#column_specifiers input').unbind('change')
-  detect_delimiter($('#csv_preview').text())
+  $('form').submit ->
+    console.log 'disabling submit'
+    $('input[type="submit"]').prop('disabled',true)
+  if $('#csv_preview').length
+    console.log($('#csv_preview').text())
+    $('#column_specifiers input').change(detect_column_header)
+    $('#column_headers').click ->
+      $('#column_specifiers input').unbind('change')
+    detect_delimiter($('#csv_preview').text())
