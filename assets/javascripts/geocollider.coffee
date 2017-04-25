@@ -45,6 +45,7 @@ detect_column_header = ->
 
 $(document).ready ->
   console.log('ready')
+  $('[data-toggle="tooltip"]').tooltip()
   $('form').submit ->
     console.log 'disabling submit'
     $('input[type="submit"]').prop('disabled',true)

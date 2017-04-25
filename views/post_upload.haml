@@ -34,7 +34,8 @@
       .col-sm-8
         %input(type='text' name='lon' class='form-control')
     .form-group
-      %label.control-label.col-sm-4(for='id') Column containing identifier string:
+      %label.control-label.col-sm-4(for='id')
+        %a(href='#' data-toggle='tooltip' title='The value from this column will be used in the output to identify each row of matched input.') Column containing identifier string:
       .col-sm-8
         %input(type='text' name='id' class='form-control')
     .form-group
