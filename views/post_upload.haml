@@ -65,5 +65,10 @@
       %input(type='checkbox' name="normalize[]" value='nfc' checked)Convert to Unicode Normalized Form C
     %label.checkbox-inline
       %input(type='checkbox' name="normalize[]" value='latin')Transliterate to Latin Script
+  .form-horizontal
+    .form-group
+      %label.control-label.col-sm-4(for='distance') Distance threshold for place matching (in kilometers):
+      .col-sm-8
+        %input(type='text' name='distance' class='form-control' value='8.0')
   %br
   %input.btn.btn-primary(type='submit' value='Process')

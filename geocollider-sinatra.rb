@@ -138,11 +138,11 @@ class GeocolliderSinatra < Sinatra::Base
         csv_comparison = 
           case params['algorithm']
           when 'place_name'
-            csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv)
+            csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv, params['distance'].to_f)
           when 'name'
             csv_parser.string_comparison_lambda(pleiades_names, pleiades_places, csv)
           when 'place'
-            csv_parser.point_comparison_lambda(pleiades_names, pleiades_places, csv)
+            csv_parser.point_comparison_lambda(pleiades_names, pleiades_places, csv, params['distance'].to_f)
           end
         csv_parser.parse([params['csvfile']], csv_comparison)
       end
