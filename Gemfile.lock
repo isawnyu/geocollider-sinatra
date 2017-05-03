@@ -24,17 +24,29 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
+    domain_name (0.5.20170404)
+      unf (>= 0.0.5, < 1.0.0)
     execjs (2.7.0)
     haml (4.0.7)
       tilt
     highline (1.7.8)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
     i18n (0.8.1)
+    mime-types (3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2016.0521)
     minitest (5.10.1)
+    netrc (0.11.0)
     rack (1.6.5)
     rack-attack (5.0.1)
       rack
     rack-protection (1.5.3)
       rack
+    rest-client (2.0.1)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rgeo (0.6.0)
     rgeo-geojson (0.4.3)
       rgeo (~> 0.5)
@@ -52,6 +64,9 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.4)
 
 PLATFORMS
   ruby
@@ -64,6 +79,7 @@ DEPENDENCIES
   geocollider!
   haml
   rack-attack
+  rest-client
   sass
   sinatra
   sprockets

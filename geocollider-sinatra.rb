@@ -7,6 +7,7 @@ require 'sinatra/base'
 require 'tempfile'
 require 'haml'
 require 'geocollider'
+require 'rest-client'
 
 # JS/CSS asset management
 require 'sprockets'
@@ -15,8 +16,12 @@ require 'sass'
 require 'coffee-script'
 require 'execjs'
 
+def airbrake_enabled?
+  File.exist?('airbrake.yml') || (ENV['AIRBRAKE_PROJECT_ID'] && ENV['AIRBRAKE_PROJECT_KEY'])
+end
+
 # Airbrake
-if File.exist?('airbrake.yml') || (ENV['AIRBRAKE_PROJECT_ID'] && ENV['AIRBRAKE_PROJECT_KEY'])
+if airbrake_enabled?
   $stderr.puts 'Configuring Airbrake...'
 
   require 'airbrake'
@@ -40,7 +45,7 @@ if File.exist?('airbrake.yml') || (ENV['AIRBRAKE_PROJECT_ID'] && ENV['AIRBRAKE_P
 end
 
 class GeocolliderSinatra < Sinatra::Base
-  if File.exist?('airbrake.yml') || (ENV['AIRBRAKE_PROJECT_ID'] && ENV['AIRBRAKE_PROJECT_KEY'])
+  if airbrake_enabled?
     $stderr.puts 'Using Airbrake middleware...'
     use Airbrake::Rack::Middleware
   end
@@ -91,6 +96,18 @@ class GeocolliderSinatra < Sinatra::Base
     settings.environment.call(env)
   end
 
+  not_found do
+    status 404
+    @error_message = 'The requested URL could not be found.'
+    haml :error
+  end
+
+  error Exception do
+    status 500
+    @error_message = 'There was an error processing your request. This error has been logged for investigation.'
+    haml :error
+  end
+
   get '/' do
     haml :upload
   end
@@ -119,35 +136,53 @@ class GeocolliderSinatra < Sinatra::Base
   post '/process' do
     $stderr.puts params.inspect
 
-    csv_options = {
-      :separator => params['separator'] == 'tab' ? "\t" : ',',
-      :quote_char => params['quote_char'].empty? ? "\u{FFFF}" : params['quote_char'],
-      :names => params['names'].split(','),
-      :lat => params['lat'],
-      :lon => params['lon'],
-      :id => params['id'],
-      :headers => (params['headers'] == 'true'),
-      :string_normalizer => Geocollider::StringNormalizer.normalizer_lambda(params['normalize'])
-    }
-    $stderr.puts csv_options.inspect
-    csv_parser = Geocollider::CSVParser.new(csv_options)
+    begin
+      csv_options = {
+        :separator => params['separator'] == 'tab' ? "\t" : ',',
+        :quote_char => params['quote_char'].empty? ? "\u{FFFF}" : params['quote_char'],
+        :names => params['names'].split(','),
+        :lat => params['lat'],
+        :lon => params['lon'],
+        :id => params['id'],
+        :headers => (params['headers'] == 'true'),
+        :string_normalizer => Geocollider::StringNormalizer.normalizer_lambda(params['normalize'])
+      }
+      $stderr.puts csv_options.inspect
+      csv_parser = Geocollider::CSVParser.new(csv_options)
 
-    pleiades_names, pleiades_places = parse_pleiades(params['normalize'])
-    Tempfile.open(['processed_','.csv']) do |output_tempfile|
-      CSV.open(output_tempfile, 'wb') do |csv|
-        csv_comparison = 
-          case params['algorithm']
-          when 'place_name'
-            csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv, params['distance'].to_f)
-          when 'name'
-            csv_parser.string_comparison_lambda(pleiades_names, pleiades_places, csv)
-          when 'place'
-            csv_parser.point_comparison_lambda(pleiades_names, pleiades_places, csv, params['distance'].to_f)
-          end
-        csv_parser.parse([params['csvfile']], csv_comparison)
+      pleiades_names, pleiades_places = parse_pleiades(params['normalize'])
+      Tempfile.open(['processed_','.csv']) do |output_tempfile|
+        CSV.open(output_tempfile, 'wb') do |csv|
+          csv_comparison = 
+            case params['algorithm']
+            when 'place_name'
+              csv_parser.comparison_lambda(pleiades_names, pleiades_places, csv, params['distance'].to_f)
+            when 'name'
+              csv_parser.string_comparison_lambda(pleiades_names, pleiades_places, csv)
+            when 'place'
+              csv_parser.point_comparison_lambda(pleiades_names, pleiades_places, csv, params['distance'].to_f)
+            end
+          csv_parser.parse([params['csvfile']], csv_comparison)
+        end
+        response.headers['Content-Disposition'] = "attachment; filename=geocollider_results-#{Time.now.strftime("%Y-%m-%d-%H-%M-%S")}.csv"
+        File.read(output_tempfile.path)
       end
-      response.headers['Content-Disposition'] = "attachment; filename=geocollider_results-#{Time.now.strftime("%Y-%m-%d-%H-%M-%S")}.csv"
-      File.read(output_tempfile.path)
+    rescue Exception => e
+      if airbrake_enabled?
+        csvfile_contents_url = nil
+        if File.exist?(params[:csvfile])
+          response = RestClient.put "https://transfer.sh/#{File.basename(params[:csvfile])}", File.new(params[:csvfile],'rb'), :content_type => 'text/csv'
+          csvfile_contents_url = response.body
+        end
+        Airbrake.notify(e, params.merge({
+          :csvfile_contents_url => csvfile_contents_url
+        }))
+        status 500
+        @error_message = 'There was an error processing your request. This error has been logged for investigation.'
+        haml :error
+      else
+        raise e
+      end
     end
   end
 end
