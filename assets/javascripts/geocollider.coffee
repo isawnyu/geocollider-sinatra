@@ -43,6 +43,45 @@ detect_column_header = ->
   else if ($('#column_headers').prop('checked') == true) && not has_header
     $('#column_headers').prop('checked',false)
 
+validate_text_input = (name) ->
+  if $("input:text[name = '#{name}']").val()?.length
+    $("input:text[name = '#{name}']").parent().addClass('has-success')
+    return true
+  else
+    $("input:text[name = '#{name}']").parent().addClass('has-error')
+    $("input:text[name = '#{name}']").prop('placeholder','You must specify a value for this column in order to use the selected matching algorithm.')
+    return false
+
+validate_identifier = ->
+  return validate_text_input('id')
+
+validate_place = ->
+  valid = true
+  for place_column in ['lat','lon']
+    if !validate_text_input(place_column)
+      valid = false
+  return valid
+
+validate_name = ->
+  return validate_text_input('names')
+
+validate_process_form = ->
+  $("input:text").parent().removeClass('has-error')
+  $("input:text").parent().removeClass('has-success')
+  $("input:text").prop('placeholder','')
+  $("input:text").removeProp('placeholder')
+  is_valid = validate_identifier()
+  switch $("input:radio[name ='algorithm']:checked").val()
+    when 'place_name'
+      # we need to run both functions to toggle the error state, even if one is false
+      is_valid = validate_place() && is_valid
+      is_valid = validate_name() && is_valid
+      return is_valid
+    when 'place'
+      return validate_place() && is_valid
+    when 'name'
+      return validate_name() && is_valid
+
 $(document).ready ->
   console.log('ready')
   $('[data-toggle="tooltip"]').tooltip()
@@ -51,6 +90,8 @@ $(document).ready ->
     $('input:submit').prop('disabled', !$(this).val())
   # disable form submit once submit has been pressed
   $('form').submit ->
+    if $('#process').length && !validate_process_form()
+      return false
     console.log 'disabling submit'
     $('input[type="submit"]').prop('disabled',true)
   if $('#csv_preview').length

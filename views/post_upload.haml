@@ -5,7 +5,7 @@
 %p Uploaded file preview (pretty-printed):
 %div#pretty_print
 %br
-%form(method="post" enctype='multipart/form-data' action='process')
+%form(method="post" enctype='multipart/form-data' action='process' id='process')
   %input(type='hidden' name='csvfile' value=@uploaded_filename)
   Field separator:
   .radio
