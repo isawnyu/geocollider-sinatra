@@ -46,6 +46,10 @@ detect_column_header = ->
 $(document).ready ->
   console.log('ready')
   $('[data-toggle="tooltip"]').tooltip()
+  # enable form submit once input file selected
+  $('input:file').change ->
+    $('input:submit').prop('disabled', !$(this).val())
+  # disable form submit once submit has been pressed
   $('form').submit ->
     console.log 'disabling submit'
     $('input[type="submit"]').prop('disabled',true)
