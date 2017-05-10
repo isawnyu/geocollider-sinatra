@@ -82,6 +82,13 @@ validate_process_form = ->
     when 'name'
       return validate_name() && is_valid
 
+# like .toggle(), but using css visibility to preserve space
+toggle_css_visibility = (jquery_object) ->
+  if jquery_object.css('visibility') == 'hidden'
+    jquery_object.css('visibility','visible')
+  else
+    jquery_object.css('visibility','hidden')
+
 $(document).ready ->
   console.log('ready')
   $('[data-toggle="tooltip"]').tooltip()
@@ -98,7 +105,7 @@ $(document).ready ->
     console.log($('#csv_preview').text())
     $('#column_specifiers input').change(detect_column_header)
     $('#column_headers').change ->
-      $('thead').toggle()
+      toggle_css_visibility($('thead'))
     $('#column_headers').click ->
       $('#column_specifiers input').unbind('change')
     detect_delimiter($('#csv_preview').text())
