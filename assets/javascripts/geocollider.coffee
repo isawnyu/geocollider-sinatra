@@ -39,9 +39,9 @@ detect_column_header = ->
     if $(@).val().match non_digit
       has_header = true
   if ($('#column_headers').prop('checked') == false) && has_header
-    $('#column_headers').prop('checked',true)
+    $('#column_headers').prop('checked',true).change()
   else if ($('#column_headers').prop('checked') == true) && not has_header
-    $('#column_headers').prop('checked',false)
+    $('#column_headers').prop('checked',false).change()
 
 validate_text_input = (name) ->
   if $("input:text[name = '#{name}']").val()?.length
@@ -97,6 +97,8 @@ $(document).ready ->
   if $('#csv_preview').length
     console.log($('#csv_preview').text())
     $('#column_specifiers input').change(detect_column_header)
+    $('#column_headers').change ->
+      $('thead').toggle()
     $('#column_headers').click ->
       $('#column_specifiers input').unbind('change')
     detect_delimiter($('#csv_preview').text())
