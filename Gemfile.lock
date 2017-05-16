@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ryanfb/geocollider.git
-  revision: a02bfd7bf3a88fd21be03490b660eef1fe6afaf3
+  revision: 85cc563c625c87d406713979345e7e2f98628282
   specs:
     geocollider (0.0.0)
       highline
@@ -11,14 +11,14 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (5.0.2)
+    activesupport (5.1.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    airbrake (6.0.0)
-      airbrake-ruby (~> 2.0)
-    airbrake-ruby (2.0.0)
+    airbrake (6.1.0)
+      airbrake-ruby (~> 2.2, >= 2.2.3)
+    airbrake-ruby (2.2.3)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -27,7 +27,8 @@ GEM
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     execjs (2.7.0)
-    haml (4.0.7)
+    haml (5.0.1)
+      temple (>= 0.8.0)
       tilt
     highline (1.7.8)
     http-cookie (1.0.3)
@@ -36,14 +37,15 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    minitest (5.10.1)
+    minitest (5.10.2)
+    mustermann (1.0.0)
     netrc (0.11.0)
-    rack (1.6.5)
+    rack (2.0.3)
     rack-attack (5.0.1)
       rack
-    rack-protection (1.5.3)
+    rack-protection (2.0.0)
       rack
-    rest-client (2.0.1)
+    rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
@@ -51,13 +53,15 @@ GEM
     rgeo-geojson (0.4.3)
       rgeo (~> 0.5)
     sass (3.4.23)
-    sinatra (1.4.8)
-      rack (~> 1.5)
-      rack-protection (~> 1.4)
-      tilt (>= 1.3, < 3)
+    sinatra (2.0.0)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.0)
+      tilt (~> 2.0)
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
+    temple (0.8.0)
     thread_safe (0.3.6)
     tilt (2.0.7)
     tzinfo (1.2.3)
