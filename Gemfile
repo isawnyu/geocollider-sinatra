@@ -7,6 +7,7 @@ gem 'rack-attack'
 gem 'activesupport', '>= 3.0.0'
 gem 'airbrake'
 gem 'rest-client'
+gem 'sucker_punch'
 
 # JS/CSS assset management
 gem 'sprockets'

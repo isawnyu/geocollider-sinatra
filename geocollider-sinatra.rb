@@ -16,6 +16,8 @@ require 'sass'
 require 'coffee-script'
 require 'execjs'
 
+require_relative './lib/pleiades_parse_job.rb'
+
 def airbrake_enabled?
   File.exist?('airbrake.yml') || (ENV['AIRBRAKE_PROJECT_ID'] && ENV['AIRBRAKE_PROJECT_KEY'])
 end
@@ -57,17 +59,17 @@ class GeocolliderSinatra < Sinatra::Base
     @pleiades = Geocollider::PleiadesParser.new()
     @pleiades_parses = {}
     @tempfiles = []
-    parse_pleiades(NORMALIZATION_DEFAULTS)
+    parse_pleiades(NORMALIZATION_DEFAULTS, true)
   end
 
   helpers do
-    def parse_pleiades(normalizations)
+    def parse_pleiades(normalizations, async = false)
       normalizations.sort!
-      unless @pleiades_parses.has_key?(normalizations)
-        $stderr.puts "No existing parse for normalizations: #{normalizations.join(' ')}\nParsing..."
-        string_normalizer_lambda = Geocollider::StringNormalizer.normalizer_lambda(normalizations)
-        @pleiades_parses[normalizations] = @pleiades.parse(Geocollider::PleiadesParser::FILENAMES, string_normalizer_lambda)
-        $stderr.puts "Parsing done for normalizations: #{normalizations.join(' ')}"
+      string_normalizer_lambda = Geocollider::StringNormalizer.normalizer_lambda(normalizations)
+      if async
+        PleiadesParseJob.perform_async(@pleiades_parses, @pleiades, Geocollider::PleiadesParser::FILENAMES, string_normalizer_lambda, normalizations)
+      else
+        PleiadesParseJob.new.perform(@pleiades_parses, @pleiades, Geocollider::PleiadesParser::FILENAMES, string_normalizer_lambda, normalizations)
       end
       return @pleiades_parses[normalizations]
     end

@@ -61,6 +61,8 @@ GEM
     sprockets (3.7.1)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
+    sucker_punch (2.0.2)
+      concurrent-ruby (~> 1.0.0)
     temple (0.8.0)
     thread_safe (0.3.6)
     tilt (2.0.7)
@@ -87,6 +89,7 @@ DEPENDENCIES
   sass
   sinatra
   sprockets
+  sucker_punch
   uglifier
 
 BUNDLED WITH
