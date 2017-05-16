@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ryanfb/geocollider.git
-  revision: f966a043e511488c65f3bb2b47747f59aa85109e
+  revision: c58f32bbc8021c73d5754b42f5b9b475855e2b88
   specs:
     geocollider (0.0.0)
       highline
