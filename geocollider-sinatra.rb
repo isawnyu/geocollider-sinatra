@@ -173,7 +173,7 @@ class GeocolliderSinatra < Sinatra::Base
       if airbrake_enabled?
         csvfile_contents_url = nil
         if File.exist?(params[:csvfile])
-          response = RestClient.put "https://transfer.sh/#{File.basename(params[:csvfile])}", File.new(params[:csvfile],'rb'), :content_type => 'text/csv'
+          response = RestClient.put "https://transfer.sh/#{URI.escape(File.basename(params[:csvfile]))}", File.new(params[:csvfile],'rb'), :content_type => 'text/csv'
           csvfile_contents_url = response.body
         end
         Airbrake.notify(e, params.merge({
