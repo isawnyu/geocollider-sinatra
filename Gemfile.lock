@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ryanfb/geocollider.git
-  revision: 1d200ac31f0a8ca53a52eae27c0267c41a5a8848
+  revision: 666bda76a314c62828aedf3f62d571343cbd5f54
   specs:
     geocollider (0.0.0)
       highline
@@ -32,7 +32,7 @@ GEM
     highline (1.7.8)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (0.8.1)
+    i18n (0.8.4)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
