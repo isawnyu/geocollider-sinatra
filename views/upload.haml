@@ -1,5 +1,11 @@
 .jumbotron
-  %h1 File Upload
+  %h1 Geocollider
+  %h3
+    %small The Pleiades Geocollider is a web application that takes input from a user in the form of a comma-separated or tab-separated data file. The input data file may contain a list of placenames, of geographic locations, or both. Geocollider attempts to align this dataset with <a href="https://pleiades.stoa.org/" target="_blank">the Pleiades gazetteer of ancient places</a>, returning to the user a comma-separated file containing information about possible matches.
+    %br
+    %br
+    %small Please upload a file using the form below, or <a href="https://pleiades.stoa.org/news/blog/introducing-geocollider" target="_blank">see the announcement blog post for more information</a>.
+  %h2 File Upload
   %p
     %form(method="post" enctype='multipart/form-data' action='/upload')
       %input(type='file' name='csvfile' accept='.csv,.tsv,.txt')
