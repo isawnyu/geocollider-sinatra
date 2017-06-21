@@ -5,10 +5,12 @@ Encoding.default_internal = Encoding::UTF_8
 
 require 'sinatra/base'
 require 'sinatra/json'
+require 'sinatra/multi_route'
 require 'tempfile'
 require 'haml'
 require 'geocollider'
 require 'rest-client'
+require 'json'
 
 # JS/CSS asset management
 require 'sprockets'
@@ -189,11 +191,49 @@ class GeocolliderSinatra < Sinatra::Base
     end
   end
 
+  def openrefine_response(query)
+    string_normalizer = Geocollider::StringNormalizer.normalizer_lambda(NORMALIZATION_DEFAULTS)
+    pleiades_names, pleiades_places = parse_pleiades(NORMALIZATION_DEFAULTS)
+    # normalized_query = string_normalizer.call(query['query'])
+    comparison_results = []
+    comparison_lambda = Geocollider::CSVParser.new({:string_normalizer => string_normalizer}).string_comparison_lambda(pleiades_names, pleiades_places, comparison_results)
+    comparison_lambda.call(query['query'], nil, nil)
+    results_hash = {:result => []}
+    $stderr.puts comparison_results.inspect
+    $stderr.puts pleiades_places[comparison_results[0][0]]
+    comparison_results.each do |comparison_result|
+      result_hash = {
+        :id => comparison_result[0],
+        :name => pleiades_places[comparison_result[0]]['title'],
+        :type => 'http://geovocab.org/spatial#Feature',
+        :score => 100.00,
+        :match => false
+      }
+      results_hash[:result] << result_hash
+    end
+    return results_hash
+  end
+
   get '/reconcile' do
-    json({
-      :name => 'Pleiades Reconciliation for OpenRefine',
-      :schemaSpace => 'https://pleiades.stoa.org/places/',
-      :identifierSpace => 'http://geovocab.org/spatial#Feature'
-    })
+    if params.has_key?('query')
+      if params['query'] =~ /^{.*}$/
+        json openrefine_response(JSON.parse(params['query']))
+      else
+        json openrefine_response({'query' => params['query']})
+      end
+    elsif params.has_key?('queries')
+      queries = JSON.parse(params['queries'])
+      query_responses = {}
+      queries.each_key do |query_key|
+        query_responses[query_key] = openrefine_response(queries[query_key])
+      end
+      json query_responses
+    else
+      json({
+        :name => 'Pleiades Reconciliation for OpenRefine',
+        :schemaSpace => 'https://pleiades.stoa.org/places/',
+        :identifierSpace => 'http://geovocab.org/spatial#Feature'
+      })
+    end
   end
 end
