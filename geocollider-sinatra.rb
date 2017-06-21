@@ -4,6 +4,7 @@ Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
 require 'sinatra/base'
+require 'sinatra/json'
 require 'tempfile'
 require 'haml'
 require 'geocollider'
@@ -186,5 +187,13 @@ class GeocolliderSinatra < Sinatra::Base
         raise e
       end
     end
+  end
+
+  get '/reconcile' do
+    json({
+      :name => 'Pleiades Reconciliation for OpenRefine',
+      :schemaSpace => 'https://pleiades.stoa.org/places/',
+      :identifierSpace => 'http://geovocab.org/spatial#Feature'
+    })
   end
 end
