@@ -20,6 +20,7 @@ require 'coffee-script'
 require 'execjs'
 
 require_relative './lib/pleiades_parse_job.rb'
+require_relative './lib/jsonp.rb'
 
 def airbrake_enabled?
   File.exist?('airbrake.yml') || (ENV['AIRBRAKE_PROJECT_ID'] && ENV['AIRBRAKE_PROJECT_KEY'])
@@ -50,6 +51,10 @@ if airbrake_enabled?
 end
 
 class GeocolliderSinatra < Sinatra::Base
+  disable :protection
+  helpers Sinatra::Jsonp
+  register Sinatra::MultiRoute
+
   if airbrake_enabled?
     $stderr.puts 'Using Airbrake middleware...'
     use Airbrake::Rack::Middleware
@@ -199,27 +204,29 @@ class GeocolliderSinatra < Sinatra::Base
     comparison_lambda = Geocollider::CSVParser.new({:string_normalizer => string_normalizer}).string_comparison_lambda(pleiades_names, pleiades_places, comparison_results)
     comparison_lambda.call(query['query'], nil, nil)
     results_hash = {:result => []}
-    $stderr.puts comparison_results.inspect
-    $stderr.puts pleiades_places[comparison_results[0][0]]
-    comparison_results.each do |comparison_result|
-      result_hash = {
-        :id => comparison_result[0],
-        :name => pleiades_places[comparison_result[0]]['title'],
-        :type => 'http://geovocab.org/spatial#Feature',
-        :score => 100.00,
-        :match => false
-      }
-      results_hash[:result] << result_hash
+    if comparison_results.length > 0
+      comparison_results.each do |comparison_result|
+        result_hash = {
+          :id => comparison_result[0],
+          :name => pleiades_places[comparison_result[0]]['title'],
+          :type => ['http://geovocab.org/spatial#Feature'],
+          :score => 100.00,
+          :match => false
+        }
+        results_hash[:result] << result_hash
+      end
     end
     return results_hash
   end
 
-  get '/reconcile' do
+  route :get, :post, ['/reconcile','/reconcile/'] do
+    $stderr.puts params.inspect
+    result_json = nil
     if params.has_key?('query')
       if params['query'] =~ /^{.*}$/
-        json openrefine_response(JSON.parse(params['query']))
+        result_json = openrefine_response(JSON.parse(params['query']))
       else
-        json openrefine_response({'query' => params['query']})
+        result_json = openrefine_response({'query' => params['query']})
       end
     elsif params.has_key?('queries')
       queries = JSON.parse(params['queries'])
@@ -227,13 +234,19 @@ class GeocolliderSinatra < Sinatra::Base
       queries.each_key do |query_key|
         query_responses[query_key] = openrefine_response(queries[query_key])
       end
-      json query_responses
+      result_json = query_responses
     else
-      json({
+      result_json = {
         :name => 'Pleiades Reconciliation for OpenRefine',
         :schemaSpace => 'https://pleiades.stoa.org/places/',
         :identifierSpace => 'http://geovocab.org/spatial#Feature'
-      })
+      }
+    end
+    $stderr.puts result_json.inspect
+    if params.has_key?('callback')
+      jsonp result_json, params['callback']
+    else
+      json result_json
     end
   end
 end
