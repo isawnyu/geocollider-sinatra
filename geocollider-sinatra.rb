@@ -239,7 +239,8 @@ class GeocolliderSinatra < Sinatra::Base
       result_json = {
         :name => 'Pleiades Reconciliation for OpenRefine',
         :schemaSpace => 'https://pleiades.stoa.org/places/',
-        :identifierSpace => 'https://pleiades.stoa.org/places/vocab#Place'
+        :identifierSpace => 'https://pleiades.stoa.org/places/vocab#Place',
+        :view => {:url => '{{id}}'}
       }
     end
     $stderr.puts result_json.inspect
