@@ -118,6 +118,7 @@ class GeocolliderSinatra < Sinatra::Base
   end
 
   get '/' do
+    @reconciliation_endpoint = request.base_url + "/reconcile"
     haml :upload
   end
 
