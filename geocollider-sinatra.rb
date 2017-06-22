@@ -51,7 +51,6 @@ if airbrake_enabled?
 end
 
 class GeocolliderSinatra < Sinatra::Base
-  disable :protection
   helpers Sinatra::Jsonp
   register Sinatra::MultiRoute
 
