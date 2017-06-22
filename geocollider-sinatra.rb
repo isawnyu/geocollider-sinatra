@@ -209,7 +209,7 @@ class GeocolliderSinatra < Sinatra::Base
         result_hash = {
           :id => comparison_result[0],
           :name => pleiades_places[comparison_result[0]]['title'],
-          :type => ['http://geovocab.org/spatial#Feature'],
+          :type => [{:id => 'https://pleiades.stoa.org/places/vocab#Place', :name => 'Pleiades Place'}],
           :score => 100.00,
           :match => false
         }
@@ -239,7 +239,7 @@ class GeocolliderSinatra < Sinatra::Base
       result_json = {
         :name => 'Pleiades Reconciliation for OpenRefine',
         :schemaSpace => 'https://pleiades.stoa.org/places/',
-        :identifierSpace => 'http://geovocab.org/spatial#Feature'
+        :identifierSpace => 'https://pleiades.stoa.org/places/vocab#Place'
       }
     end
     $stderr.puts result_json.inspect
