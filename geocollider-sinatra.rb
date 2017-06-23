@@ -196,7 +196,7 @@ class GeocolliderSinatra < Sinatra::Base
     end
   end
 
-  def openrefine_response(query)
+  def openrefine_response(query, limit = nil)
     string_normalizer = Geocollider::StringNormalizer.normalizer_lambda(NORMALIZATION_DEFAULTS)
     pleiades_names, pleiades_places = parse_pleiades(NORMALIZATION_DEFAULTS)
     # normalized_query = string_normalizer.call(query['query'])
@@ -205,6 +205,9 @@ class GeocolliderSinatra < Sinatra::Base
     comparison_lambda.call(query['query'], nil, nil)
     results_hash = {:result => []}
     if comparison_results.length > 0
+      unless limit.nil?
+        comparison_results = comparison_results[0..(limit.to_i - 1)]
+      end
       comparison_results.each do |comparison_result|
         result_hash = {
           :id => comparison_result[0],
@@ -224,7 +227,7 @@ class GeocolliderSinatra < Sinatra::Base
     result_json = nil
     if params.has_key?('query')
       if params['query'] =~ /^{.*}$/
-        result_json = openrefine_response(JSON.parse(params['query']))
+        result_json = openrefine_response(JSON.parse(params['query']),params['limit'])
       else
         result_json = openrefine_response({'query' => params['query']})
       end
@@ -232,7 +235,7 @@ class GeocolliderSinatra < Sinatra::Base
       queries = JSON.parse(params['queries'])
       query_responses = {}
       queries.each_key do |query_key|
-        query_responses[query_key] = openrefine_response(queries[query_key])
+        query_responses[query_key] = openrefine_response(queries[query_key],params['limit'])
       end
       result_json = query_responses
     else
