@@ -222,6 +222,27 @@ class GeocolliderSinatra < Sinatra::Base
     return results_hash
   end
 
+  route :get, :post, ['/suggest','/suggest/'] do
+    $stderr.puts params.inspect
+    result_json = nil
+    if params.has_key?('prefix')
+      result_json = {
+        :code => '/api/status/ok',
+        :status => '200 OK',
+        :prefix => params['prefix'],
+        :result => [
+          {:id => 'http://www.w3.org/2003/01/geo/wgs84_pos#lat', :name => 'Latitude'},
+          {:id => 'http://www.w3.org/2003/01/geo/wgs84_pos#long', :name => 'Longitude'}
+        ]
+      }
+    end
+    if params.has_key?('callback')
+      jsonp result_json, params['callback']
+    else
+      json result_json
+    end
+  end
+
   route :get, :post, ['/reconcile','/reconcile/'] do
     $stderr.puts params.inspect
     result_json = nil
@@ -242,8 +263,15 @@ class GeocolliderSinatra < Sinatra::Base
       result_json = {
         :name => 'Pleiades Reconciliation for OpenRefine',
         :schemaSpace => 'https://pleiades.stoa.org/places/',
-        :identifierSpace => 'https://pleiades.stoa.org/places/vocab#Place',
-        :view => {:url => '{{id}}'}
+        :identifierSpace => 'https://pleiades.stoa.org/places/vocab#',
+        :view => {:url => '{{id}}'},
+        :suggest => {
+            :property => {
+              :service_url => request.base_url,
+              :service_path => '/suggest'
+            }
+          },
+        :defaultTypes => [{:id => 'Place', :name => 'Pleiades Place'}]
       }
     end
     $stderr.puts result_json.inspect
