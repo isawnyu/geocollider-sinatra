@@ -54,6 +54,9 @@ class GeocolliderSinatra < Sinatra::Base
   helpers Sinatra::Jsonp
   register Sinatra::MultiRoute
 
+  LATITUDE_PID = 'http://www.w3.org/2003/01/geo/wgs84_pos#lat'
+  LONGITUDE_PID = 'http://www.w3.org/2003/01/geo/wgs84_pos#long'
+
   if airbrake_enabled?
     $stderr.puts 'Using Airbrake middleware...'
     use Airbrake::Rack::Middleware
@@ -201,8 +204,20 @@ class GeocolliderSinatra < Sinatra::Base
     pleiades_names, pleiades_places = parse_pleiades(NORMALIZATION_DEFAULTS)
     # normalized_query = string_normalizer.call(query['query'])
     comparison_results = []
+    comparison_lambda = nil
     comparison_lambda = Geocollider::CSVParser.new({:string_normalizer => string_normalizer}).string_comparison_lambda(pleiades_names, pleiades_places, comparison_results)
-    comparison_lambda.call(query['query'], nil, nil)
+    query_point = nil
+    if query.has_key?('properties')
+      property_pids = query['properties'].map{|p| p['pid']}
+      if property_pids.include?(LATITUDE_PID) && property_pids.include?(LONGITUDE_PID)
+        comparison_lambda = Geocollider::CSVParser.new({:string_normalizer => string_normalizer}).comparison_lambda(pleiades_names, pleiades_places, comparison_results)
+        query_point = Geocollider::Point.new(
+          latitude: query['properties'].select{|p| p['pid'] == LATITUDE_PID}[0]['v'],
+          longitude: query['properties'].select{|p| p['pid'] == LONGITUDE_PID}[0]['v'])
+        $stderr.puts "Using Geo: #{query_point.inspect}"
+      end
+    end
+    comparison_lambda.call(query['query'], query_point, nil)
     results_hash = {:result => []}
     if comparison_results.length > 0
       unless limit.nil?
@@ -231,8 +246,8 @@ class GeocolliderSinatra < Sinatra::Base
         :status => '200 OK',
         :prefix => params['prefix'],
         :result => [
-          {:id => 'http://www.w3.org/2003/01/geo/wgs84_pos#lat', :name => 'Latitude'},
-          {:id => 'http://www.w3.org/2003/01/geo/wgs84_pos#long', :name => 'Longitude'}
+          {:id => LATITUDE_PID, :name => 'Latitude'},
+          {:id => LONGITUDE_PID, :name => 'Longitude'}
         ]
       }
     end
