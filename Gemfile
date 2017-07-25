@@ -3,7 +3,7 @@ gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'haml', "~> 4.0"
 # gem 'geocollider', :path => '/Users/ryan/source/dc3/geocollider'
-gem 'geocollider', :git => 'https://github.com/ryanfb/geocollider.git'
+gem 'geocollider', :git => 'https://github.com/isawnyu/geocollider.git'
 gem 'rack-attack'
 gem 'activesupport', '>= 3.0.0'
 gem 'airbrake'
