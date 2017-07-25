@@ -66,7 +66,7 @@ class GeocolliderSinatra < Sinatra::Base
 
   def initialize
     super()
-    @pleiades = Geocollider::PleiadesParser.new()
+    @pleiades = Geocollider::Parsers::PleiadesParser.new()
     @pleiades_parses = {}
     @tempfiles = []
     parse_pleiades(NORMALIZATION_DEFAULTS, true)
@@ -77,9 +77,9 @@ class GeocolliderSinatra < Sinatra::Base
       normalizations.sort!
       string_normalizer_lambda = Geocollider::StringNormalizer.normalizer_lambda(normalizations)
       if async
-        PleiadesParseJob.perform_async(@pleiades_parses, @pleiades, Geocollider::PleiadesParser::FILENAMES, string_normalizer_lambda, normalizations)
+        PleiadesParseJob.perform_async(@pleiades_parses, @pleiades, Geocollider::Parsers::PleiadesParser::FILENAMES, string_normalizer_lambda, normalizations)
       else
-        PleiadesParseJob.new.perform(@pleiades_parses, @pleiades, Geocollider::PleiadesParser::FILENAMES, string_normalizer_lambda, normalizations)
+        PleiadesParseJob.new.perform(@pleiades_parses, @pleiades, Geocollider::Parsers::PleiadesParser::FILENAMES, string_normalizer_lambda, normalizations)
       end
       return @pleiades_parses[normalizations]
     end
@@ -161,7 +161,7 @@ class GeocolliderSinatra < Sinatra::Base
         :string_normalizer => Geocollider::StringNormalizer.normalizer_lambda(params['normalize'])
       }
       $stderr.puts csv_options.inspect
-      csv_parser = Geocollider::CSVParser.new(csv_options)
+      csv_parser = Geocollider::Parsers::CSVParser.new(csv_options)
 
       pleiades_names, pleiades_places = parse_pleiades(params['normalize'])
       Tempfile.open(['processed_','.csv']) do |output_tempfile|
@@ -205,12 +205,12 @@ class GeocolliderSinatra < Sinatra::Base
     # normalized_query = string_normalizer.call(query['query'])
     comparison_results = []
     comparison_lambda = nil
-    comparison_lambda = Geocollider::CSVParser.new({:string_normalizer => string_normalizer}).string_comparison_lambda(pleiades_names, pleiades_places, comparison_results)
+    comparison_lambda = Geocollider::Parsers::CSVParser.new({:string_normalizer => string_normalizer}).string_comparison_lambda(pleiades_names, pleiades_places, comparison_results)
     query_point = nil
     if query.has_key?('properties')
       property_pids = query['properties'].map{|p| p['pid']}
       if property_pids.include?(LATITUDE_PID) && property_pids.include?(LONGITUDE_PID)
-        comparison_lambda = Geocollider::CSVParser.new({:string_normalizer => string_normalizer}).comparison_lambda(pleiades_names, pleiades_places, comparison_results)
+        comparison_lambda = Geocollider::Parsers::CSVParser.new({:string_normalizer => string_normalizer}).comparison_lambda(pleiades_names, pleiades_places, comparison_results)
         query_point = Geocollider::Point.new(
           latitude: query['properties'].select{|p| p['pid'] == LATITUDE_PID}[0]['v'],
           longitude: query['properties'].select{|p| p['pid'] == LONGITUDE_PID}[0]['v'])
