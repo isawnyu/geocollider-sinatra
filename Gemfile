@@ -9,6 +9,9 @@ gem 'activesupport', '>= 3.0.0'
 gem 'airbrake'
 gem 'rest-client'
 gem 'sucker_punch'
+gem 'rack-test'
+gem 'rake'
+gem 'minitest'
 
 # JS/CSS assset management
 gem 'sprockets'

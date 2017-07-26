@@ -46,6 +46,9 @@ GEM
       rack
     rack-protection (2.0.0)
       rack
+    rack-test (0.7.0)
+      rack (>= 1.0, < 3)
+    rake (12.0.0)
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
@@ -91,7 +94,10 @@ DEPENDENCIES
   execjs
   geocollider!
   haml (~> 4.0)
+  minitest
   rack-attack
+  rack-test
+  rake
   rest-client
   sass
   sinatra
