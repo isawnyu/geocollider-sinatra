@@ -39,6 +39,9 @@ if airbrake_enabled?
   else
     airbrake_config[:project_id] = ENV['AIRBRAKE_PROJECT_ID']
     airbrake_config[:project_key] = ENV['AIRBRAKE_PROJECT_KEY']
+    if ENV.key?('AIRBRAKE_HOST')
+      airbrake_config[:host] = ENV['AIRBRAKE_HOST']
+    end
   end
 
   Airbrake.configure do |c|
