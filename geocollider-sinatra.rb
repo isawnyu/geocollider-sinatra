@@ -45,6 +45,9 @@ if airbrake_enabled?
   end
 
   Airbrake.configure do |c|
+    if airbrake_config.key?(:host)
+      c.host = airbrake_config[:host]
+    end
     c.project_id = airbrake_config[:project_id]
     c.project_key = airbrake_config[:project_key]
 
